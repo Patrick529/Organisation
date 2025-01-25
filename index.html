@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="Aufgaben.html">
+    <link href="Finanzen.html">
+    <link href="Prank.html">
+</head>
+<body>
+    <header>
+        <button class="menu-button" onclick="toggleSidebar()"> <h1>Menü</h1></button>
+
+        <h1>Homepage</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Stop.html">Über Uns</a></li>
+                <li><a href="Stop.html">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <br>
+        <a href="index.html"><h2>Home</h2> </a>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <a href="Aufgaben.html">Aufgaben</a>
+        <br>
+        <a href="Finanzen.html">Finanzen</a>
+        <br>
+        <a href="Stop.html">Baustelle</a>
+    </div>
+
+    <main class="main">
+        <div class="cards">
+            <div class="card">
+                <img src="Aufgaben.png" alt="Aufgaben">
+                <h3>Aufgaben</h3>
+                <p>Verwalte deine Aufgaben und plane sie im Kalender.</p>
+                <button onclick="window.location.href='Aufgaben.html'">Zur Aufgaben-Seite</button>
+            </div>
+
+            <div class="card">
+                <img src="Finanzen2.webp" alt="Finanzen">
+                <h3>Finanzen</h3>
+                <p>Behalte deine Finanzen im Blick.</p>
+                <button onclick="window.location.href='finanzen.html'">Zur Finanzen-Seite</button>
+            </div>
+
+            <div class="card">
+                <img src="Baustelle.webp" alt="Baustelle Betreten Verboten!">
+                <h3>Baustelle Betreten Verboten!</h3>
+                <p>An diesem Feature wird gerade gearbeitet. <br>Wir bitten um Verständnis!</p>
+                <button onclick="window.location.href='Stop.html'">Zur Baustelle</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

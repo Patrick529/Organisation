@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do-Liste</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #dff1ff;
+      color: black;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: #0154a7;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    header nav ul li {
+      margin: 0 1rem;
+    }
+
+    header nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 200px;
+      background-color: #0154a7;
+      padding: 1rem;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar.active {
+      display: flex;
+    }
+
+    .menu-button {
+      background-color: #0154a7;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+
+    /* Main Content Styles */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .todo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .todo-item.low {
+      background-color: #d4edda;
+    }
+
+    .todo-item.medium {
+      background-color: #ffeeba;
+    }
+
+    .todo-item.high {
+      background-color: #f8d7da;
+    }
+
+    .todo-item button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+
+    .todo-item button:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="menu-button" onclick="toggleSidebar()"> <h1>Menü</h1></button>
+    <h1>Aufgaben-Seite</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Prank.html">Über Uns</a></li>
+        <li><a href="Prank.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <br>
+    <a href="Aufgaben.html"><h2>Aufgaben</h2></a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <a href="index.html">Home</a>
+    <br>
+    <a href="Finanzen.html">Finanzen</a>
+    <br>
+    <a href="Stop.html">Baustelle</a>
+</div>
+  <div class="container">
+    <h1>🗓️ Persönlicher Kalender</h1>
+    <div class="todo-section">
+      <h2>To-Do-Liste</h2>
+      <form id="todo-form">
+        <input type="text" id="todo-input" placeholder="Aufgabe hinzufügen..." required>
+        <select id="priority">
+          <option value="low">Niedrig</option>
+          <option value="medium">Mittel</option>
+          <option value="high">Hoch</option>
+        </select>
+        <input type="date" id="deadline" required>
+        <button type="submit">Hinzufügen</button>
+      </form>
+      <ul id="todo-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("todo-form");
+      const todoList = document.getElementById("todo-list");
+
+      const savedTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      savedTodos.forEach(todo => addTodoToList(todo.text, todo.priority, todo.deadline));
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const todoInput = document.getElementById("todo-input");
+        const priority = document.getElementById("priority");
+        const deadline = document.getElementById("deadline");
+
+        const taskText = todoInput.value;
+        const taskPriority = priority.value;
+        const taskDeadline = deadline.value;
+
+        addTodoToList(taskText, taskPriority, taskDeadline);
+        saveTodoToLocalStorage(taskText, taskPriority, taskDeadline);
+
+        todoInput.value = "";
+        deadline.value = "";
+      });
+
+      function addTodoToList(taskText, taskPriority, taskDeadline) {
+        const li = document.createElement("li");
+        li.className = `todo-item ${taskPriority}`;
+
+        li.innerHTML = `
+          <span>${taskText} - Fällig: ${taskDeadline}</span>
+          <button class="delete-btn">🗑️</button>
+        `;
+
+        li.querySelector(".delete-btn").addEventListener("click", () => {
+          li.remove();
+          removeTodoFromLocalStorage(taskText, taskDeadline);
+        });
+
+        todoList.appendChild(li);
+      }
+
+      function saveTodoToLocalStorage(taskText, taskPriority, taskDeadline) {
+        const todos = JSON.parse(localStorage.getItem("todos")) || [];
+        todos.push({ text: taskText, priority: taskPriority, deadline: taskDeadline });
+        localStorage.setItem("todos", JSON.stringify(todos));
+      }
+
+      function removeTodoFromLocalStorage(taskText, taskDeadline) {
+        const todos = JSON.parse(localStorage.getItem("todos")) || [];
+        const updatedTodos = todos.filter(todo => !(todo.text === taskText && todo.deadline === taskDeadline));
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      }
+    });
+  </script>
+</body>
+</html>
